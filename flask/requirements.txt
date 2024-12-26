@@ -1,0 +1,7 @@
+flask
+pandas
+requests
+sqlalchemy
+sqlalchemy-utils
+api-offres-emploi
+psycopg2

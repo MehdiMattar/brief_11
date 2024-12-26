@@ -1,0 +1,60 @@
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  streamlit: 
+    build:
+      context: ./app
+    volumes: 
+      - ./app:/app
+    ports:
+      - 8502:8502
+    networks: 
+      - postgres
+
+  api:
+    build:
+      context: ./flask
+    volumes: 
+      - ./flask:/app
+    ports:
+      - 5001:5000
+    networks: 
+      - postgres
+  
+  
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: mehdi_mattar@yahoo.fr
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+
+    ports:
+      - 5050:80
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:
